@@ -5,7 +5,7 @@ var async = require('async');
 var stats = require('../modules/data')
 
 const API_KEY = process.env['API_KEY'];
-const APP_TITLE = 'TMS Dashboard';
+const APP_TITLE = 'HAM Dashboard';
 
 let data = {
   datafreshness: 0,

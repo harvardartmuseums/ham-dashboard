@@ -1,0 +1,23 @@
+<div class="card w-25 mb-5">
+    <div class="card-body">
+        <h2 class="card-title">Collection Statistics</h2>
+
+        <ul class="list-group">
+            <li class="list-group-item"># of objects online:  {{apistats.objects.recordcount}}</li>
+            <li class="list-group-item"># of objects installed: {{apistats.objects.onview}}</li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="card w-25">
+    <div class="card-body">
+        <h2 class="card-title">Current Exhibitions</h2>
+
+        <ul class="list-group">
+            {{#each apistats.exhibitions.current}}
+                <li class="list-group-item"><a href="{{url}}">{{title}}</a></li>
+            {{/each}}
+        </ul>
+    </div>
+</div>

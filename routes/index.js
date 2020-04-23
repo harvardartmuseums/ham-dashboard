@@ -8,6 +8,9 @@ const API_KEY = process.env['API_KEY'];
 const APP_TITLE = 'TMS Dashboard';
 
 let data = {
+  datafreshness: 0,
+  dateoflastrefresh: "2000-01-01",
+  dateoflastexport: "2000-01-01",
   objects: {
     recordcount: 0,
     onview: 0
@@ -28,11 +31,21 @@ router.get('/', function(req, res, next) {
 
   async.series([
     function(callback) {
-        const url = `https://api.harvardartmuseums.org/object?apikey=${API_KEY}&size=0&q=accesslevel:1`;
+        const url = `https://api.harvardartmuseums.org/object?apikey=${API_KEY}&size=1&q=accesslevel:1`;
         fetch(url)
           .then(response => response.json())
           .then(results => {
-              callback(null, results['info']['totalrecords']);
+              let e = new Date(results['records'][0]['lastupdate']);
+              let d = new Date(results['records'][0]['lastupdate']);
+              d.setHours(d.getHours() + 2);
+
+              let output = {
+                lastexport: e.toLocaleString('en-US'),
+                lastrefresh: d.toLocaleString('en-US'),
+                recordcount: results['info']['totalrecords'] 
+              };
+
+              callback(null, output);
             });
             
     },
@@ -56,9 +69,18 @@ router.get('/', function(req, res, next) {
     }  
   ],
       function(err, results) {
-          data.objects.recordcount = results[0];
+          data.dateoflastrefresh = results[0]['lastrefresh'];
+          data.dateoflastexport = results[0]['lastexport'];
+          data.objects.recordcount = results[0]['recordcount'];
           data.objects.onview = results[1];
           data.exhibitions.current = results[2];
+
+          // calculate the age of the data
+          // freshness = number of hours old
+          const now = new Date();
+          const exportdate = new Date(data.dateoflastexport);
+          const freshness = Math.round((now - exportdate)/3600000);
+          data.datafreshness = freshness;
 
           res.render('production', { title: APP_TITLE, apistats: data });
       }

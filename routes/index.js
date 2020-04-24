@@ -40,8 +40,8 @@ router.get('/', function(req, res, next) {
               d.setHours(d.getHours() + 2);
 
               let output = {
-                lastexport: e.toLocaleString('en-US'),
-                lastrefresh: d.toLocaleString('en-US'),
+                lastexport: e.toLocaleString('en-US', {timeZone: "America/New_York"}),
+                lastrefresh: d.toLocaleString('en-US', {timeZone: "America/New_York"}),
                 recordcount: results['info']['totalrecords'] 
               };
 

@@ -77,7 +77,7 @@ router.get('/', function(req, res, next) {
 
           // calculate the age of the data
           // freshness = number of hours old
-          const now = new Date();
+          const now = new Date().toLocaleString('en-US', {timeZone: "America/New_York"});
           const exportdate = new Date(data.dateoflastexport);
           const freshness = Math.round((now - exportdate)/3600000);
           data.datafreshness = freshness;

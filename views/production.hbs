@@ -1,35 +1,73 @@
-<div class="card w-25 mb-5">
-    <div class="card-body">
-        <h2 class="card-title">Data Freshness</h2>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card mb-5">
+            <div class="card-body">
+                <h2 class="card-title">Data Freshness</h2>
 
-        <p class="lead">The data on our website is about {{apistats.datafreshness}} hour(s) old.</p>
-        
-        <p class="">Collections data was last exported around <br/> {{apistats.dateoflastexport}}.</p>
-        <p class="">Collections online was last refreshed around <br/> {{apistats.dateoflastrefresh}}.</p>
+                <p class="lead">The data on our website is about {{apistats.datafreshness}} hour(s) old.</p>
+                
+                <p class="">Collections data was last exported around <br/> {{apistats.dateoflastexport}}.</p>
+                <p class="">Collections online was last refreshed around <br/> {{apistats.dateoflastrefresh}}.</p>
+
+            </div>
+        </div>
+
+        <div class="card mb-5">
+            <div class="card-body">
+                <h2 class="card-title">Collection Statistics</h2>
+
+                <p class="lead">{{apistats.objects.public.count_as_percent}}% of the collection is viewable online.</p>
+                <p class="lead">{{apistats.objects.onview.count_as_percent}}% of the collection is on view in galleries.</p>
+
+                <ul class="list-group">
+                    <li class="list-group-item"># of objects:  {{apistats.objects.count}}</li>
+                    <li class="list-group-item"># of objects online:  {{apistats.objects.public.count}} </li>
+                    <li class="list-group-item"># of objects installed: {{apistats.objects.onview.count}} </li>
+                </ul>
+            </div>
+        </div>
 
     </div>
-</div>
 
-<div class="card w-25 mb-5">
-    <div class="card-body">
-        <h2 class="card-title">Collection Statistics</h2>
+    <div class="col-sm-4">
+        <div class="card mb-5">
+            <div class="card-body">
+                <h2 class="card-title">Alt Text Statistics</h2>
 
-        <ul class="list-group">
-            <li class="list-group-item"># of objects online:  {{apistats.objects.recordcount}}</li>
-            <li class="list-group-item"># of objects installed: {{apistats.objects.onview}}</li>
-        </ul>
-    </div>
-</div>
+                <p class="lead">{{apistats.objects.alttext.count_as_percent}}% of collection images have alt text.</p>
+                <p># of images online with alttext: {{apistats.objects.alttext.count}}</p>
+                </ul>
+            </div>
+        </div>
 
+        <div class="card mb-5">
+            <div class="card-body">
+                <h2 class="card-title">Website Statistics*</h2>
 
-<div class="card w-25">
-    <div class="card-body">
-        <h2 class="card-title">Current Exhibitions</h2>
+                <p class="lead">{{apistats.pageviews.objects.count}} individual objects have been viewed on our website to date. That's {{apistats.pageviews.objects.count_as_percent}}% of the collection.</p>
+                
+                <p>The object with the most views in a single day: </p>
+                <img class="img-fluid" src="{{apistats.pageviews.singledaymostviews.object.images.[0].iiifbaseuri}}/full/!400,400/0/default.jpg">
+                <p><a href="{{apistats.pageviews.singledaymostviews.object.url}}">{{apistats.pageviews.singledaymostviews.object.title}}</a> was viewed {{apistats.pageviews.singledaymostviews.activitycount}} times on {{apistats.pageviews.singledaymostviews.date}}.</p>
+            </div>
 
-        <ul class="list-group">
-            {{#each apistats.exhibitions.current}}
-                <li class="list-group-item"><a href="{{url}}">{{title}}</a></li>
-            {{/each}}
-        </ul>
+            <div class="card-footer text-muted">
+                * Website statistics are based on data collected from Google Analytics from {{apistats.pageviews.statsdates.start}} to {{apistats.pageviews.statsdates.end}}
+            </div>
+        </div>        
+    </div> 
+
+    <div class="col-sm-4">
+        <div class="card mb-5">
+            <div class="card-body">
+                <h2 class="card-title">Current Exhibitions</h2>
+
+                <ul class="list-group">
+                    {{#each apistats.exhibitions.current}}
+                        <li class="list-group-item"><a href="{{url}}">{{title}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
     </div>
 </div>

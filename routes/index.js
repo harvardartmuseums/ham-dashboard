@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var fetch = require('node-fetch');
 var async = require('async');
-var stats = require('../modules/data')
+var stats = require('../modules/data');
+const { stat } = require('fs');
 
-const API_KEY = process.env['API_KEY'];
 const APP_TITLE = 'HAM Dashboard';
 
 let data = {
@@ -12,14 +11,25 @@ let data = {
   dateoflastrefresh: "2000-01-01",
   dateoflastexport: "2000-01-01",
   objects: {
-    recordcount: 0,
-    onview: 0
+    count: 0,
+    public: {
+      count: 0,
+      count_as_percent: 0
+    },
+    onview: {
+      count: 0,
+      count_as_percent: 0
+    },
+    alttext: {
+      count: 0,
+      count_as_percent: 0
+    }
   },
+  pageviews: {},
   exhibitions: {
       current: []
   }
 };
-
 
 /* GET environment specific page. */
 router.get('/:env', function(req, res, next) {  
@@ -28,68 +38,42 @@ router.get('/:env', function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
-  async.series([
-    function(callback) {
-        const url = `https://api.harvardartmuseums.org/object?apikey=${API_KEY}&size=1&q=accesslevel:1`;
-        fetch(url)
-          .then(response => response.json())
-          .then(results => {
-              let e = new Date(results['records'][0]['lastupdate']);
-              let d = new Date(results['records'][0]['lastupdate']);
-              d.setHours(d.getHours() + 2);
-
-              let output = {
-                lastexport: e.toLocaleString('en-US', {timeZone: "America/New_York"}),
-                lastrefresh: d.toLocaleString('en-US', {timeZone: "America/New_York"}),
-                recordcount: results['info']['totalrecords'] 
-              };
-
-              callback(null, output);
-            });
-            
+  
+  async.parallel({
+      objectStats: stats.getObjectStats,
+      currentExhibitions: stats.getCurrentExhibitions,
+      alttextStats: stats.getAltTextStats,
+      objectsOnViewStats: stats.getObjectsInGalleryStats,
+      activityStats: stats.getActivityStats
     },
-    function(callback) {
-        const url = `https://api.harvardartmuseums.org/object?apikey=${API_KEY}&size=0&gallery=any`;
-        fetch(url)
-          .then(response => response.json())
-          .then(results => {
-              callback(null, results['info']['totalrecords']);
-            });
-            
-    },
-    function(callback) {
-        const url = `https://api.harvardartmuseums.org/exhibition?apikey=${API_KEY}&venue=HAM&status=current`;
-        fetch(url)
-          .then(response => response.json())
-          .then(results => {
-              callback(null, results['records']);
-            });
-            
-    }  
-  ],
-      function(err, results) {
-          data.dateoflastrefresh = results[0]['lastrefresh'];
-          data.dateoflastexport = results[0]['lastexport'];
-          data.objects.recordcount = results[0]['recordcount'];
-          data.objects.onview = results[1];
-          data.exhibitions.current = results[2];
+    function(err, results) {
+        data.dateoflastrefresh = results['objectStats']['lastrefresh'];
+        data.dateoflastexport = results['objectStats']['lastexport'];
+        data.objects.count = results['objectStats']['recordcount'];
+        data.objects.public.count = results['objectStats']['recordcount_public'];
+        data.objects.public.count_as_percent = ((results['objectStats']['recordcount_public']/results['objectStats']['recordcount'])*100).toFixed(2);
+        data.objects.onview.count = results['objectsOnViewStats'];
+        data.objects.onview.count_as_percent = ((results['objectsOnViewStats']/results['objectStats']['recordcount'])*100).toFixed(2);
+        data.exhibitions.current = results['currentExhibitions'];
+        data.objects.alttext.count = results['alttextStats'];
+        data.objects.alttext.count_as_percent = ((data.objects.alttext.count/data.objects.count)*100).toFixed(2);
+        data.pageviews = results['activityStats']['pageviews'];
+        data.pageviews.objects.count_as_percent = ((data.pageviews.objects.count/data.objects.public.count)*100).toFixed(2)
 
-          // calculate the age of the data
-          // freshness = number of hours old
-          let now = new Date();
-          now = new Date(now.toUTCString());
+        // calculate the age of the data
+        // freshness = number of hours old
+        let now = new Date();
+        now = new Date(now.toUTCString());
 
-          let exportdate = new Date(data.dateoflastexport);
-          exportdate = new Date(exportdate.toUTCString());
-          
-          const freshness = Math.round((now - exportdate)/3600000);
-          data.datafreshness = freshness;
+        let exportdate = new Date(data.dateoflastexport);
+        exportdate = new Date(exportdate.toUTCString());
+        
+        const freshness = Math.round((now - exportdate)/3600000);
+        data.datafreshness = freshness;
 
-          res.render('production', { title: APP_TITLE, apistats: data });
+        res.render('production', { title: APP_TITLE, apistats: data });
       }
-  );
-
+    );
 });
 
 module.exports = router;

@@ -50,14 +50,18 @@ router.get('/', function(req, res, next) {
         data.dateoflastrefresh = results['objectStats']['lastrefresh'];
         data.dateoflastexport = results['objectStats']['lastexport'];
         data.objects.count = results['objectStats']['recordcount'];
+        data.objects.count_as_string = data.objects.count.toLocaleString('en');
         data.objects.public.count = results['objectStats']['recordcount_public'];
+        data.objects.public.count_as_string = data.objects.public.count.toLocaleString('en');
         data.objects.public.count_as_percent = ((results['objectStats']['recordcount_public']/results['objectStats']['recordcount'])*100).toFixed(2);
         data.objects.onview.count = results['objectsOnViewStats'];
+        data.objects.onview.count_as_string = data.objects.onview.count.toLocaleString('en');
         data.objects.onview.count_as_percent = ((results['objectsOnViewStats']/results['objectStats']['recordcount'])*100).toFixed(2);
         data.exhibitions.current = results['currentExhibitions'];
         data.objects.alttext.count = results['alttextStats'];
         data.objects.alttext.count_as_percent = ((data.objects.alttext.count/data.objects.count)*100).toFixed(2);
         data.pageviews = results['activityStats']['pageviews'];
+        data.pageviews.objects.count_as_string = data.pageviews.objects.count.toLocaleString('en');
         data.pageviews.objects.count_as_percent = ((data.pageviews.objects.count/data.objects.public.count)*100).toFixed(2)
 
         // calculate the age of the data

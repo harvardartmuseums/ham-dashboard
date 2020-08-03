@@ -20,9 +20,9 @@
                 <p class="lead">{{apistats.objects.onview.count_as_percent}}% of the collection is on view in galleries.</p>
 
                 <ul class="list-group">
-                    <li class="list-group-item"># of objects:  {{apistats.objects.count}}</li>
-                    <li class="list-group-item"># of objects online:  {{apistats.objects.public.count}} </li>
-                    <li class="list-group-item"># of objects installed: {{apistats.objects.onview.count}} </li>
+                    <li class="list-group-item"># of active objects in TMS:  {{apistats.objects.count_as_string}}</li>
+                    <li class="list-group-item"># of objects online:  {{apistats.objects.public.count_as_string}} </li>
+                    <li class="list-group-item"># of objects installed: {{apistats.objects.onview.count_as_string}} </li>
                 </ul>
             </div>
         </div>
@@ -44,7 +44,7 @@
             <div class="card-body">
                 <h2 class="card-title">Website Statistics*</h2>
 
-                <p class="lead">{{apistats.pageviews.objects.count}} individual objects have been viewed on our website to date. That's {{apistats.pageviews.objects.count_as_percent}}% of the collection.</p>
+                <p class="lead">{{apistats.pageviews.objects.count_as_string}} individual objects have been viewed on our website to date. That's {{apistats.pageviews.objects.count_as_percent}}% of the collection.</p>
                 
                 <p>The object with the most views in a single day: </p>
                 <img class="img-fluid" src="{{apistats.pageviews.singledaymostviews.object.images.[0].iiifbaseuri}}/full/!400,400/0/default.jpg">

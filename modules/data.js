@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const querystring = require('querystring');
 const { response } = require('express');
 
-const API_KEY = process.env['API_KEY'];
+const API_KEY = process.env.API_KEY;
 
 function makeURL(endpoint, parameters, aggregations) {
   const HAM_API_URL = 'https://api.harvardartmuseums.org';

@@ -162,10 +162,41 @@ function getActivityStats(callback) {
       });
 }
 
+function getKeyStats(callback) {  
+  const params = {
+    size: 0
+  };
+  const aggs = {
+    "date_stats": {
+        "extended_stats": {
+            "field": "createdat"
+        }
+    }
+  };
+  const url = makeURL('key', params, aggs);
+
+  fetch(url)
+    .then(response => response.json())
+    .then(results => {
+      let output = {
+        keys: {
+          count: results.info.totalrecords,
+          statsdates: {
+            start: results.aggregations.date_stats.min_as_string,
+            end: results.aggregations.date_stats.max_as_string
+          },
+        }
+      };
+
+      callback(null, output);
+    });
+}
+
 module.exports = {
   getObjectStats: getObjectStats,
   getObjectsInGalleryStats: getObjectsInGalleryStats,
   getCurrentExhibitions: getCurrentExhibitions,
   getAltTextStats: getAltTextStats,
-  getActivityStats: getActivityStats
+  getActivityStats: getActivityStats,
+  getKeyStats: getKeyStats
 };

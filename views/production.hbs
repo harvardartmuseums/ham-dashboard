@@ -27,6 +27,15 @@
             </div>
         </div>
 
+        <div class="card mb-5">
+            <div class="card-body">
+                <h2 class="card-title">API Statistics</h2>
+
+                <p class="lead">{{apistats.keys.count_as_string}} keys have been issued since {{apistats.keys.statsdates.start_short}}.</p>
+                <p class="lead">The newest key was cut at precisely {{apistats.keys.statsdates.end}}.</p>
+
+            </div>
+        </div>
     </div>
 
     <div class="col-sm-4">

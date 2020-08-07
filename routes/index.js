@@ -10,6 +10,11 @@ let data = {
   datafreshness: 0,
   dateoflastrefresh: "2000-01-01",
   dateoflastexport: "2000-01-01",
+  keys: {
+    count: 0,
+    count_as_string: 0,
+    statsdates: {}
+  },
   objects: {
     count: 0,
     public: {
@@ -44,7 +49,8 @@ router.get('/', function(req, res, next) {
       currentExhibitions: stats.getCurrentExhibitions,
       alttextStats: stats.getAltTextStats,
       objectsOnViewStats: stats.getObjectsInGalleryStats,
-      activityStats: stats.getActivityStats
+      activityStats: stats.getActivityStats,
+      keyStats: stats.getKeyStats
     },
     function(err, results) {
         data.dateoflastrefresh = results['objectStats']['lastrefresh'];
@@ -63,6 +69,10 @@ router.get('/', function(req, res, next) {
         data.pageviews = results['activityStats']['pageviews'];
         data.pageviews.objects.count_as_string = data.pageviews.objects.count.toLocaleString('en');
         data.pageviews.objects.count_as_percent = ((data.pageviews.objects.count/data.objects.public.count)*100).toFixed(2)
+        data.keys.count = results['keyStats']['keys']['count'];
+        data.keys.count_as_string = data.keys.count.toLocaleString('en');
+        data.keys.statsdates = results['keyStats']['keys']['statsdates'];
+        data.keys.statsdates.start_short = data.keys.statsdates.start.substr(0, 10);
 
         // calculate the age of the data
         // freshness = number of hours old

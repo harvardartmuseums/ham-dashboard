@@ -70,7 +70,9 @@ function getObjectsInGalleryStats(callback) {
 function getCurrentExhibitions(callback) {
   const params = {
     venue: 'HAM',
-    status: 'current'
+    status: 'current',
+    sort: 'enddate',
+    sortorder: 'asc'
   };
   const url = makeURL('exhibition', params);
 
@@ -84,7 +86,9 @@ function getCurrentExhibitions(callback) {
 function getUpcomingExhibitions(callback) {
   const params = {
     venue: 'HAM',
-    status: 'upcoming'
+    status: 'upcoming',
+    sort: 'begindate',
+    sortorder: 'asc'
   };
   const url = makeURL('exhibition', params);
 

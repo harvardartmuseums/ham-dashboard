@@ -72,18 +72,26 @@
                 <h2 class="card-title">Current Exhibitions</h2>
 
                 <ul class="list-group">
-                    {{#each apistats.exhibitions.current}}
-                        <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">Closes on {{enddate}}</span></li>
-                    {{/each}}
+                    {{#if apistats.exhibitions.current.length}}
+                        {{#each apistats.exhibitions.current}}
+                            <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">closes on {{enddate}}</span></li>
+                        {{/each}}
+                    {{else}}
+                        <li class="list-group-item">No current exhibitions</li>
+                    {{/if}}                        
                 </ul>
             </div>
             <div class="card-body">
                 <h2 class="card-title">Upcoming Exhibitions</h2>
 
                 <ul class="list-group">
-                    {{#each apistats.exhibitions.upcoming}}
-                        <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">Opens on {{begindate}}</span></li>
-                    {{/each}}
+                    {{#if apistats.exhibitions.upcoming.length}}
+                        {{#each apistats.exhibitions.upcoming}}
+                            <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">opens on {{begindate}}</span></li>
+                        {{/each}}
+                    {{else}}
+                        <li class="list-group-item">No upcoming exhibitions</li>
+                    {{/if}}
                 </ul>
             </div>            
         </div>

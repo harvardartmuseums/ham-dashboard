@@ -32,7 +32,8 @@ let data = {
   },
   pageviews: {},
   exhibitions: {
-      current: []
+      current: [],
+      upcoming: []
   }
 };
 
@@ -47,6 +48,7 @@ router.get('/', function(req, res, next) {
   async.parallel({
       objectStats: stats.getObjectStats,
       currentExhibitions: stats.getCurrentExhibitions,
+      upcomingExhibitions: stats.getUpcomingExhibitions,
       alttextStats: stats.getAltTextStats,
       objectsOnViewStats: stats.getObjectsInGalleryStats,
       activityStats: stats.getActivityStats,
@@ -64,6 +66,7 @@ router.get('/', function(req, res, next) {
         data.objects.onview.count_as_string = data.objects.onview.count.toLocaleString('en');
         data.objects.onview.count_as_percent = ((results['objectsOnViewStats']/results['objectStats']['recordcount'])*100).toFixed(2);
         data.exhibitions.current = results['currentExhibitions'];
+        data.exhibitions.upcoming = results['upcomingExhibitions'];
         data.objects.alttext.count = results['alttextStats'];
         data.objects.alttext.count_as_percent = ((data.objects.alttext.count/data.objects.count)*100).toFixed(2);
         data.pageviews = results['activityStats']['pageviews'];

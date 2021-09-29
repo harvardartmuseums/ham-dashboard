@@ -81,6 +81,20 @@ function getCurrentExhibitions(callback) {
       });        
 }
 
+function getUpcomingExhibitions(callback) {
+  const params = {
+    venue: 'HAM',
+    status: 'upcoming'
+  };
+  const url = makeURL('exhibition', params);
+
+  fetch(url)
+    .then(response => response.json())
+    .then(results => {
+        callback(null, results['records']);
+      });        
+}
+
 function getAltTextStats(callback) {
   const params = {
     size: 0,
@@ -196,6 +210,7 @@ module.exports = {
   getObjectStats: getObjectStats,
   getObjectsInGalleryStats: getObjectsInGalleryStats,
   getCurrentExhibitions: getCurrentExhibitions,
+  getUpcomingExhibitions: getUpcomingExhibitions,
   getAltTextStats: getAltTextStats,
   getActivityStats: getActivityStats,
   getKeyStats: getKeyStats

@@ -73,10 +73,19 @@
 
                 <ul class="list-group">
                     {{#each apistats.exhibitions.current}}
-                        <li class="list-group-item"><a href="{{url}}">{{title}}</a></li>
+                        <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">Closes on {{enddate}}</span></li>
                     {{/each}}
                 </ul>
             </div>
+            <div class="card-body">
+                <h2 class="card-title">Upcoming Exhibitions</h2>
+
+                <ul class="list-group">
+                    {{#each apistats.exhibitions.upcoming}}
+                        <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">Opens on {{begindate}}</span></li>
+                    {{/each}}
+                </ul>
+            </div>            
         </div>
     </div>
 </div>

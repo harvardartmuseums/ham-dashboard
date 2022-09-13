@@ -104,12 +104,41 @@ function getAltTextStats(callback) {
     size: 0,
     q: 'images.alttext:* AND accesslevel:1'
   };
-  const url = makeURL('object', params);
+  const aggs = {
+    "by_division": {
+      "terms": {
+        "field": "division"
+      }
+    },
+    "total_images" : { 
+      "value_count" : { 
+        "field" : "images.imageid" 
+      } 
+    }
+  };
+
+  const url = makeURL('object', params, aggs);
 
   fetch(url)
     .then(response => response.json())
     .then(results => {
-        callback(null, results['info']['totalrecords']);
+        let output = {
+          objects: {
+            count: results['info']['totalrecords']
+          },
+          divisions: []
+        };
+        results.aggregations.by_division.buckets.forEach(division => {
+          output.divisions.push(
+            {
+              name: division.key, 
+              count: division.doc_count, 
+              percent: ((division.doc_count/output.objects.count)*100).toFixed(1)
+            }
+          ) 
+        });
+
+        callback(null, output);
       });
 }  
 
@@ -139,7 +168,23 @@ function getActivityStats(callback) {
             "extended_stats": {
                 "field": "date"
             }
-        }
+        },
+        "by_object": {
+          "terms": {
+              "field": "objectid",
+              "size": 5,
+              "order": {
+                  "totals": "desc"
+              }
+          },
+          "aggs": {
+              "totals": {
+                  "sum": {
+                      "field": "activitycount"
+                  }
+              }
+          }
+        }        
       }
     }
   };
@@ -164,17 +209,30 @@ function getActivityStats(callback) {
             singledaymostviews: {
               date: object['date'],
               activitycount: object['activitycount']
+            },
+            alltimemostviews: {
+              activitycount: pageviews['by_object']['buckets'][0]['totals']['value']
             }
           }
         };
 
         let objectUrl = makeURL(`object/${object['objectid']}`);
+
         fetch(objectUrl)
           .then(response => response.json())
           .then(results => {
             output.pageviews.singledaymostviews.object = results;
 
-            callback(null, output);
+
+            let objectUrl = makeURL(`object/${pageviews['by_object']['buckets'][0]['key']}`);
+
+            fetch(objectUrl)
+              .then(response => response.json())
+              .then(results => {
+                output.pageviews.alltimemostviews.object = results;
+
+              callback(null, output);
+              });
           });
         
       });

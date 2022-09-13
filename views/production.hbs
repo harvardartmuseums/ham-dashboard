@@ -44,7 +44,12 @@
                 <h2 class="card-title">Alt Text Statistics</h2>
 
                 <p class="lead">{{apistats.objects.alttext.count_as_percent}}% of collection images have alt text.</p>
-                <p># of images online with alttext: {{apistats.objects.alttext.count}}</p>
+                <p># of images online with alt text: {{apistats.objects.alttext.count_as_string}}</p>
+
+                <ul class="list-group">
+                    {{#each apistats.objects.alttext.by_division}}
+                    <li class="list-group-item">{{percent}}% are {{name}}</li>
+                    {{/each}}
                 </ul>
             </div>
         </div>
@@ -55,9 +60,22 @@
 
                 <p class="lead">{{apistats.pageviews.objects.count_as_string}} individual objects have been viewed on our website to date. That's {{apistats.pageviews.objects.count_as_percent}}% of the collection.</p>
                 
-                <p>The object with the most views in a single day: </p>
-                <img class="img-fluid" src="{{apistats.pageviews.singledaymostviews.object.images.[0].iiifbaseuri}}/full/!400,400/0/default.jpg">
-                <p><a href="{{apistats.pageviews.singledaymostviews.object.url}}">{{apistats.pageviews.singledaymostviews.object.title}}</a> was viewed {{apistats.pageviews.singledaymostviews.activitycount}} times on {{apistats.pageviews.singledaymostviews.date}}.</p>
+                <div class="card-deck">
+                    <div class="card">
+                        <img class="img-fluid" src="{{apistats.pageviews.singledaymostviews.object.images.[0].iiifbaseuri}}/full/!400,400/0/default.jpg">
+                        <div class="card-body">
+                            <div class="card-title">Object with the most views in a single day</div>
+                            <p><a href="{{apistats.pageviews.singledaymostviews.object.url}}">{{apistats.pageviews.singledaymostviews.object.title}}</a> was viewed <span class="font-weight-bold">{{apistats.pageviews.singledaymostviews.activitycount}}</span> times on {{apistats.pageviews.singledaymostviews.date}}.</p>
+                        </div>
+                    </div>     
+                 <div class="card">
+                        <img class="img-fluid" src="{{apistats.pageviews.alltimemostviews.object.images.[0].iiifbaseuri}}/full/!400,400/0/default.jpg">
+                        <div class="card-body">
+                            <p>Object with the most views of all time</p>
+                            <p><a href="{{apistats.pageviews.alltimemostviews.object.url}}">{{apistats.pageviews.alltimemostviews.object.title}}</a> has been viewed <span class="font-weight-bold">{{apistats.pageviews.alltimemostviews.activitycount}}</span> times since we started tracking pageviews.</p>
+                        </div>
+                    </div>                                         
+                </div>
             </div>
 
             <div class="card-footer text-muted">

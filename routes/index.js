@@ -67,8 +67,10 @@ router.get('/', function(req, res, next) {
         data.objects.onview.count_as_percent = ((results['objectsOnViewStats']/results['objectStats']['recordcount'])*100).toFixed(2);
         data.exhibitions.current = results['currentExhibitions'];
         data.exhibitions.upcoming = results['upcomingExhibitions'];
-        data.objects.alttext.count = results['alttextStats'];
+        data.objects.alttext.count = results['alttextStats']['objects']['count'];
+        data.objects.alttext.count_as_string = data.objects.alttext.count.toLocaleString('en');
         data.objects.alttext.count_as_percent = ((data.objects.alttext.count/data.objects.count)*100).toFixed(2);
+        data.objects.alttext.by_division = results['alttextStats']['divisions'];
         data.pageviews = results['activityStats']['pageviews'];
         data.pageviews.objects.count_as_string = data.pageviews.objects.count.toLocaleString('en');
         data.pageviews.objects.count_as_percent = ((data.pageviews.objects.count/data.objects.public.count)*100).toFixed(2)

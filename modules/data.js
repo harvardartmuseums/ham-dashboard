@@ -2,6 +2,9 @@ const fetch = require('node-fetch');
 const querystring = require('querystring');
 const { response } = require('express');
 
+let charts;
+import('./charts.mjs').then(c => {charts = c;})
+
 const API_KEY = process.env.API_KEY;
 
 function makeURL(endpoint, parameters, aggregations) {
@@ -249,6 +252,13 @@ function getKeyStats(callback) {
         "extended_stats": {
             "field": "createdat"
         }
+    },
+    "keys_by_year": {
+        "date_histogram": {
+            "field": "createdat",
+            "interval": "1y",
+            "time_zone": "America/New_York"
+        }
     }
   };
   const url = makeURL('key', params, aggs);
@@ -263,8 +273,23 @@ function getKeyStats(callback) {
             start: results.aggregations.date_stats.min_as_string,
             end: results.aggregations.date_stats.max_as_string
           },
+          charts: {
+            keys_by_year: ""
+          }
         }
       };
+
+      let data = [];
+      let databucket = results.aggregations.keys_by_year.buckets;
+      databucket.forEach(d => {
+        let group = {
+          year: parseInt(d.key_as_string.slice(0,4)),
+          count: d.doc_count
+        };
+        data.push(group);
+      });
+
+      output.keys.charts.keys_by_year = charts.makeBarChart(data, "year", "count");
 
       callback(null, output);
     });

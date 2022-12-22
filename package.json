@@ -6,13 +6,16 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@observablehq/plot": "^0.6.1",
     "async": "^3.2.0",
     "cookie-parser": "~1.4.4",
+    "d3": "^7.8.0",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "hbs": "^4.1.1",
     "http-errors": "~1.6.3",
+    "jsdom": "^20.0.3",
     "morgan": "~1.9.1",
     "node-fetch": "^2.6.0"
   }

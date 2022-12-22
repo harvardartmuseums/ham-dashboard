@@ -79,6 +79,7 @@ router.get('/', function(req, res, next) {
         data.keys.count_as_string = data.keys.count.toLocaleString('en');
         data.keys.statsdates = results['keyStats']['keys']['statsdates'];
         data.keys.statsdates.start_short = data.keys.statsdates.start.substr(0, 10);
+        data.keys.chart_by_year = results['keyStats']['keys']['charts']['keys_by_year'];
 
         // calculate the age of the data
         // freshness = number of hours old

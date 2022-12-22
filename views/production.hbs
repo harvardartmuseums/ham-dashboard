@@ -96,7 +96,7 @@
                 <ul class="list-group">
                     {{#if apistats.exhibitions.current.length}}
                         {{#each apistats.exhibitions.current}}
-                            <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">closes on {{enddate}}</span></li>
+                            <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">closes on {{enddate_long}} <br/>{{days_left}} days left</span></li>
                         {{/each}}
                     {{else}}
                         <li class="list-group-item">No current exhibitions</li>
@@ -109,7 +109,7 @@
                 <ul class="list-group">
                     {{#if apistats.exhibitions.upcoming.length}}
                         {{#each apistats.exhibitions.upcoming}}
-                            <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">opens on {{begindate}}</span></li>
+                            <li class="list-group-item"><a href="{{url}}">{{title}}</a> <br/><span class="figure-caption">opens on {{begindate_long}} <br/>{{days_until_opening}} days until opening</span></li>
                         {{/each}}
                     {{else}}
                         <li class="list-group-item">No upcoming exhibitions</li>

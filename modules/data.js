@@ -84,6 +84,17 @@ function getCurrentExhibitions(callback) {
   fetch(url)
     .then(response => response.json())
     .then(results => {
+      let now = new Date();
+      now = new Date(now.toUTCString());
+  
+      results['records'].forEach(r => {
+          let enddate = new Date(r['enddate']);
+          enddate.setDate(enddate.getDate() + 1);
+          const diff = enddate.getTime() - now.getTime();
+          r.days_left = Math.round(diff/86400000);
+          r.enddate_long = enddate.toLocaleDateString('en-US', {weekday: 'long', year: "numeric", month: "long", day: "numeric",});
+        });
+
         callback(null, results['records']);
       });        
 }
@@ -100,6 +111,17 @@ function getUpcomingExhibitions(callback) {
   fetch(url)
     .then(response => response.json())
     .then(results => {
+      let now = new Date();
+      now = new Date(now.toUTCString());
+
+      results['records'].forEach(r => {
+          let begindate = new Date(r['begindate']);
+          begindate.setDate(begindate.getDate() + 1);
+          const diff = begindate.getTime() - now.getTime();
+          r.days_until_opening = Math.round(diff/86400000);          
+          r.begindate_long = begindate.toLocaleDateString('en-US', {weekday: 'long', year: "numeric", month: "long", day: "numeric",});
+      });
+
         callback(null, results['records']);
       });        
 }

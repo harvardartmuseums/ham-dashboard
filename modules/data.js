@@ -44,7 +44,9 @@ function getObjectStats(callback) {
 
         let output = {
           lastexport: e.toLocaleString('en-US', {timeZone: "America/New_York"}),
+          lastexport_raw: e,
           lastrefresh: d.toLocaleString('en-US', {timeZone: "America/New_York"}),
+          lastrefresh_raw: d,
           recordcount: results['info']['totalrecords'],
           recordcount_public: results['aggregations']['by_accesslevel']['buckets'][0]['doc_count']
         };

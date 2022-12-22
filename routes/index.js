@@ -57,6 +57,7 @@ router.get('/', function(req, res, next) {
     function(err, results) {
         data.dateoflastrefresh = results['objectStats']['lastrefresh'];
         data.dateoflastexport = results['objectStats']['lastexport'];
+        data.dateoflastexport_raw = results['objectStats']['lastexport_raw'];
         data.objects.count = results['objectStats']['recordcount'];
         data.objects.count_as_string = data.objects.count.toLocaleString('en');
         data.objects.public.count = results['objectStats']['recordcount_public'];
@@ -84,7 +85,7 @@ router.get('/', function(req, res, next) {
         let now = new Date();
         now = new Date(now.toUTCString());
 
-        let exportdate = new Date(data.dateoflastexport);
+        let exportdate = new Date(data.dateoflastexport_raw);
         exportdate = new Date(exportdate.toUTCString());
         
         const freshness = Math.round((now - exportdate)/3600000);

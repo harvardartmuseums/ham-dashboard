@@ -88,8 +88,7 @@ function getCurrentExhibitions(callback) {
       now = new Date(now.toUTCString());
   
       results['records'].forEach(r => {
-          let enddate = new Date(r['enddate']);
-          enddate.setDate(enddate.getDate() + 1);
+          let enddate = new Date(`${r['enddate']} 00:00:00`);
           const diff = enddate.getTime() - now.getTime();
           r.days_left = Math.round(diff/86400000);
           r.enddate_long = enddate.toLocaleDateString('en-US', {weekday: 'long', year: "numeric", month: "long", day: "numeric",});
@@ -115,8 +114,7 @@ function getUpcomingExhibitions(callback) {
       now = new Date(now.toUTCString());
 
       results['records'].forEach(r => {
-          let begindate = new Date(r['begindate']);
-          begindate.setDate(begindate.getDate() + 1);
+          let begindate = new Date(`${r['begindate']} 00:00:00`);
           const diff = begindate.getTime() - now.getTime();
           r.days_until_opening = Math.round(diff/86400000);          
           r.begindate_long = begindate.toLocaleDateString('en-US', {weekday: 'long', year: "numeric", month: "long", day: "numeric",});

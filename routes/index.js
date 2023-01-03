@@ -2,9 +2,12 @@ var express = require('express');
 var router = express.Router();
 var async = require('async');
 var stats = require('../modules/data');
+var apicache = require('apicache');
 const { stat } = require('fs');
 
 const APP_TITLE = 'HAM Dashboard';
+
+let cache = apicache.middleware;
 
 let data = {
   datafreshness: 0,
@@ -43,7 +46,7 @@ router.get('/:env', function(req, res, next) {
 });
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', cache('6 hours'), function(req, res, next) {
   
   async.parallel({
       objectStats: stats.getObjectStats,

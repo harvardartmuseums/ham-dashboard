@@ -55,6 +55,7 @@ router.get('/', cache('6 hours'), function(req, res, next) {
       alttextStats: stats.getAltTextStats,
       objectsOnViewStats: stats.getObjectsInGalleryStats,
       activityStats: stats.getActivityStats,
+      fiveByFiveStats: stats.getFiveByFiveStats,
       keyStats: stats.getKeyStats
     },
     function(err, results) {
@@ -77,7 +78,8 @@ router.get('/', cache('6 hours'), function(req, res, next) {
         data.objects.alttext.by_division = results['alttextStats']['divisions'];
         data.pageviews = results['activityStats']['pageviews'];
         data.pageviews.objects.count_as_string = data.pageviews.objects.count.toLocaleString('en');
-        data.pageviews.objects.count_as_percent = ((data.pageviews.objects.count/data.objects.public.count)*100).toFixed(2)
+        data.pageviews.objects.count_as_percent = ((data.pageviews.objects.count/data.objects.public.count)*100).toFixed(2);
+        data.fivebyfive = results['fiveByFiveStats'];
         data.keys.count = results['keyStats']['keys']['count'];
         data.keys.count_as_string = data.keys.count.toLocaleString('en');
         data.keys.statsdates = results['keyStats']['keys']['statsdates'];

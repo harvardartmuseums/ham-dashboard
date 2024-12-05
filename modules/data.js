@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
 const { response } = require('express');
+const { DateTime } = require('luxon');
 
 let charts;
 import('./charts.mjs').then(c => {charts = c;})
@@ -263,6 +264,87 @@ function getActivityStats(callback) {
       });
 }
 
+function getFiveByFiveStats(callback) {
+  let output = {};
+
+  const lastWeek = DateTime.now().minus({weeks: 1});
+  const startDate = DateTime.now().minus({weeks: 5}).startOf('week');
+  const endDate = DateTime.now().minus({weeks: 1}).endOf('week');
+
+  let params = {
+    size: 0,
+    q: "activitytype:pageviews"
+  };
+
+  let aggs = {
+    "by_week": {
+      "date_histogram": {
+        "field": "date",
+        "calendar_interval": "1w",
+        "format": "yyyy-MM-dd",
+        "min_doc_count": 0,
+        "hard_bounds": {
+          "min": startDate.toISODate(),
+          "max": endDate.plus({days: 1}).toISODate()
+        }
+      },
+      "aggs": {
+        "by_object": {
+          "terms": {
+            "field": "objectid",
+            "size": 5,
+            "order": {
+              "totals": "desc"
+            }
+          },
+          "aggs": {
+            "totals": {
+              "sum": {
+                "field": "activitycount"
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  
+  const url = makeURL('activity', params, aggs);
+  fetch(url)
+    .then(response => response.json())
+    .then(results => {
+      let objects = results["aggregations"]["by_week"]["buckets"][0]["by_object"]["buckets"];
+      let objectIdList = objects.map(o => o.key).join("|");
+
+      params = {
+        id: objectIdList,
+        fields: "title,images,url"
+      };
+
+      let objectsUrl = makeURL("object", params);      
+      
+      fetch(objectsUrl)
+        .then(response => response.json())
+        .then(results => {
+
+          objects.forEach(o => {
+            o.data = results.records.find(r => r.id == o.key);
+          })
+
+          output = {
+            dateRange: {
+              start: startDate.toLocaleString('en-US', {timeZone: "America/New_York"}),
+              end: endDate.toLocaleString('en-US', {timeZone: "America/New_York"})
+            },
+            objects: objects
+          };
+
+          callback(null, output);
+        });
+
+    });
+}
+
 function getKeyStats(callback) {  
   const params = {
     size: 0
@@ -322,5 +404,6 @@ module.exports = {
   getUpcomingExhibitions: getUpcomingExhibitions,
   getAltTextStats: getAltTextStats,
   getActivityStats: getActivityStats,
+  getFiveByFiveStats: getFiveByFiveStats,
   getKeyStats: getKeyStats
 };
